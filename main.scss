@@ -29,19 +29,20 @@ h2 {
 	align-items: flex-start;
 	> li {
 		-webkit-perspective:1000;
-		perspective:1000;
+		perspective:1000px;
 		cursor: pointer;
 		transform-origin: 50% 0;
 		transition:all .5s ease-in-out;
 		width: 22vw;
 		max-width: 300px;
-		min-width: 200px;
+		min-width: 180px;
 		margin-bottom:3vh;
 		border-radius:12px;
 		.card {
 			img {
 				width: 100%;
 			}
+			-webkit-font-smoothing: antialiased;
 			transition:1s all ease-in-out;
 			transform-style: preserve-3d;
 			
@@ -89,7 +90,7 @@ h2 {
 		}
 		&.active {
 			z-index: 9;
-			box-shadow: 0 0 0 200vw rgba(255,255,255,.5);
+			//box-shadow: 0 0 0 200vw rgba(255,255,255,.5);
 
 			.card {
 				transform:rotate3d(0,1,0,-180deg);

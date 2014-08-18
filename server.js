@@ -10,6 +10,7 @@ var natural = require('natural');
 var WordPOS = require('wordpos');
 var cheerio = require('cheerio');
 var request = require('request');
+var mongojs = require('mongojs');
 var fs = require('fs');
 var sass = require("node-sass");
 
@@ -27,6 +28,10 @@ app.use(
   })
 );
 
+// Open DB connection
+var uri = "mongodb://localhost:27017/test",
+	db = mongojs.connect(uri, ["recipes"]);
+
 
 var port = process.env.PORT || 3000; 		// set our port
 
@@ -35,9 +40,101 @@ var port = process.env.PORT || 3000; 		// set our port
 var router = express.Router(); 				// get an instance of the express Router
 
 // test route to make sure everything is working (accessed at GET http://localhost:3000/api)
+/*
 router.get('/scrape', function(req, res) {
-	var url = 'http://allrecipes.com/Recipe/White-Cheese-Chicken-Lasagna/';
+	var url = 'http://allrecipes.com/Recipe/Chicken-Pot-Pie-IX/';
+    		
+    });
+});
+*/
+
+
+router.get('/all', function(req, res) {
+	var top = req.query.top || 10,
+		offset = req.query.offset || 0;
+
+
+	db.recipes.find({}).skip(offset).limit(top, function(err, records) {
+		if (err) {
+			res.json({"error":err});
+			res.end();
+			return;
+		} else {
+			res.json(records);
+		}
+	})
+});
+
+
+router.get('/search/:term', function(req, res) {
+	res.json(req.param("term"));
+
+
+	db.recipes.find({}).skip(offset).limit(top, function(err, records) {
+		if (err) {
+			res.json({"error":err});
+			res.end();
+			return;
+		} else {
+			res.json(records);
+		}
+	})
+});
+
+router.get('/list', function(req, res) {
+	var url = 'http://allrecipes.com/Recipes/BBQ--Grilling/';
     request(url, function(err, resp, body) {
+        if (err) {
+            throw err;
+        }
+        $ = cheerio.load(body);
+        var hrefs = [];
+        $(".grid-view a.title[href*='/Recipe/']").each(function() {
+	        console.log(this.attribs.href);
+	        hrefs.push(this.attribs.href);
+	        
+        });        
+        scrape(hrefs, 0);
+
+     });
+     
+     //return;
+});
+
+
+// more routes for our API will happen here
+
+// REGISTER OUR ROUTES -------------------------------
+// all of our routes will be prefixed with /api
+app.use('/api', router);
+
+app.use(express.static(__dirname + '/'));
+
+// START THE SERVER
+// =============================================================================
+app.listen(port);
+console.log('Magic happens on port ' + port);
+
+function strParseFloat(str) {
+	var base = 0;
+	str = str.split(" ");
+	for (var i = 0; i < str.length; i++) {
+		try {
+			base += eval(str[i]);
+		} catch(e) {}
+	}
+	return base;
+}
+
+// This does the heavy lifting
+function scrape(hrefs, i) {
+	if (i > hrefs.length) {
+		return;
+	}
+
+	var url = "http://allrecipes.com" + hrefs[i];
+
+	request(url, function(err, resp, body) {
         if (err) {
             throw err;
         }
@@ -104,7 +201,7 @@ router.get('/scrape', function(req, res) {
 				
 				var ing = $ingredient.text().toLowerCase();
 				wordpos.getPOS(ing, function(result) {
-					console.log(result);
+					//console.log(result);
 					
 					var toRemove = result.adjectives.concat(result.rest)
 					toRemove.forEach(function(rem) { 
@@ -149,62 +246,23 @@ router.get('/scrape', function(req, res) {
 						}
 			});
 			
-			res.json(o);
+			db.recipes.save(o, function(err, records) {
+				if (err) {
+					//res.json({"error":err});
+					//res.end();
+					console.log(err);
+					return;
+				} else {
+					console.log("success");
+					//console.log(records);
+				}
+			});
+			
+			i++;
+			scrape(hrefs, i);
+			//res.json("true");
 		}
-		
-    });
-});
+	});
 
-
-router.get('/all', function(req, res) {
-	fs.readFile("scrape1.json",'utf8', function(err, data) {
-		res.send(JSON.parse(data));
-	})
-});
-
-router.get('/list', function(req, res) {
-	var url = 'http://allrecipes.com/search/?wt=chicken';
-    request(url, function(err, resp, body) {
-        if (err) {
-            throw err;
-        }
-        $ = cheerio.load(body);
-        var hrefs = [];
-        $(".grid-result-cntnr a").each(function() {
-	        console.log(this.attribs.href);
-	        hrefs.push(this.attribs.href);
-	        
-        });
-        
-        res.json(hrefs);
-
-     });
-     
-     //return;
-});
-
-
-// more routes for our API will happen here
-
-// REGISTER OUR ROUTES -------------------------------
-// all of our routes will be prefixed with /api
-app.use('/api', router);
-
-app.use(express.static(__dirname + '/'));
-
-// START THE SERVER
-// =============================================================================
-app.listen(port);
-console.log('Magic happens on port ' + port);
-
-function strParseFloat(str) {
-	var base = 0;
-	str = str.split(" ");
-	for (var i = 0; i < str.length; i++) {
-		try {
-			base += eval(str[i]);
-		} catch(e) {}
-	}
-	return base;
 }
 

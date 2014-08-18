@@ -54,9 +54,10 @@
       </div>
     </div>
 
-    <div class="container-fluid">
-      <ul class="recipes" ng-controller="RecipesController">
-        <li ng-repeat="(i, recipe) in recipes track by $index"
+    <div class="container-fluid" ng-controller="RecipesController">
+    	<input ng-model="searchText" class="form-control" placeholder="Search recipes..." type="search">
+      <ul class="recipes">
+        <li ng-repeat="(i, recipe) in recipes track by $index  | filter:searchText"
         	ng-class="{'active': recipe.active, 'large': recipe.large }"
         	ng-click="activate(recipe)"
         	>
@@ -88,13 +89,13 @@
         </li>
         
       </ul>
-
+	  {{ recipes.length }} recipes found
       <footer>
       </footer>
     </div> 
 
         <script>
-	        var app = angular.module("Revercipe", ['iso.directives'])
+	        var app = angular.module("Revercipe", [])
 	        
 	        .run(function($rootScope, $http) {
 		        $http({
@@ -109,7 +110,13 @@
 	        
 	        .controller("RecipesController", function($scope, $rootScope) {
 		        $scope.activate = function(recipe) {
-			        recipe.active = !recipe.active;
+		        	var isActive = recipe.active;
+		        	
+		        	for (var i = 0; i < $rootScope.recipes.length; i++) {
+			        	$rootScope.recipes[i].active = false;
+		        	}
+		        
+			        recipe.active = !isActive;
 			        recipe.large = false;
 		        }
 		        
