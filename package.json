@@ -1,13 +1,24 @@
-
 {
-	"name": "node-api",
-	"version": "0.1.1",
-	"scripts": {
-    	"start": "./node_modules/.bin/supervisor server.js"
-	},
-	"dependencies": {
-	    "supervisor": "*",
-		"express": "~4.2.0",
-		"body-parser": "~1.0.1"
-	}
+  "name": "node-api",
+  "version": "0.1.1",
+  "scripts": {
+    "start": "./node_modules/.bin/supervisor server.js"
+  },
+  "dependencies": {
+    "CSSselect": "*",
+    "body-parser": "~1.0.1",
+    "cheerio": "*",
+    "dom-serializer": "*",
+    "express": "~4.2.0",
+    "htmlparser2": "*",
+    "lodash": "*",
+    "mongodb": "*",
+    "mongojs": "^0.14.1",
+    "natural": "*",
+    "node-sass": "*",
+    "request": "*",
+    "scraper": "*",
+    "supervisor": "*",
+    "wordpos": "*"
+  }
 }
