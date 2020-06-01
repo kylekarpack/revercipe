@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "CSSselect": "*",
-    "body-parser": "~1.0.1",
+    "body-parser": "~1.19.0",
     "cheerio": "*",
     "dom-serializer": "*",
     "express": "~4.2.0",
