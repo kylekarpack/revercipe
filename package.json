@@ -2,14 +2,16 @@
   "name": "node-api",
   "version": "0.1.1",
   "scripts": {
-    "start": "./node_modules/.bin/supervisor server.js"
+    "start": "./node_modules/.bin/supervisor server.js",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "dependencies": {
     "CSSselect": "*",
     "body-parser": "~1.19.0",
     "cheerio": "*",
     "dom-serializer": "*",
-    "express": "~4.17.1",
+    "express": "~4.16.0",
     "htmlparser2": "*",
     "lodash": "*",
     "mongodb": "*",
@@ -19,6 +21,8 @@
     "request": "*",
     "scraper": "*",
     "supervisor": "*",
-    "wordpos": "*"
-  }
+    "wordpos": "*",
+    "snyk": "^1.334.0"
+  },
+  "snyk": true
 }
