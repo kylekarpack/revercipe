@@ -15,7 +15,7 @@
     "htmlparser2": "*",
     "lodash": "*",
     "mongodb": "*",
-    "mongojs": "^0.18.2",
+    "mongojs": "^1.0.0",
     "natural": "*",
     "node-sass": "*",
     "request": "*",

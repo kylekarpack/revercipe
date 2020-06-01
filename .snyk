@@ -6,3 +6,14 @@ patch:
   'npm:mime:20170907':
     - express > accepts > mime:
         patched: '2020-06-01T23:40:07.583Z'
+  SNYK-JS-LODASH-567746:
+    - lodash:
+        patched: '2020-06-01T23:43:57.790Z'
+    - node-sass > lodash:
+        patched: '2020-06-01T23:43:57.790Z'
+    - node-sass > sass-graph > lodash:
+        patched: '2020-06-01T23:43:57.790Z'
+    - node-sass > gaze > globule > lodash:
+        patched: '2020-06-01T23:43:57.790Z'
+    - scraper > jsdom > request-promise-native > request-promise-core > lodash:
+        patched: '2020-06-01T23:43:57.790Z'
